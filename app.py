@@ -22,10 +22,10 @@ def index():
     if delete_id:
         try:
             conn = get_db_connection()
-            cursor = conn.cursor()
-            cursor.execute("DELETE FROM students WHERE student_id = %s", (delete_id,))
+            action = conn.cursor()
+            action.execute("DELETE FROM students WHERE student_id = %s", (delete_id,))
             conn.commit()
-            cursor.close()
+            action.close()
             conn.close()
             flash("Student record deleted successfully.", "success")
             return redirect(url_for('index'))
@@ -45,10 +45,10 @@ def index():
     if edit_id_param:
         try:
             conn = get_db_connection()
-            cursor = conn.cursor()
-            cursor.execute("SELECT student_id, name, registration_number, course FROM students WHERE student_id = %s", (edit_id_param,))
-            row = cursor.fetchone()
-            cursor.close()
+            action = conn.cursor()
+            action.execute("SELECT student_id, name, registration_number, course FROM students WHERE student_id = %s", (edit_id_param,))
+            row = action.fetchone()
+            action.close()
             conn.close()
             
             if row:
@@ -88,11 +88,11 @@ def index():
         else:
             try:
                 conn = get_db_connection()
-                cursor = conn.cursor()
+                action = conn.cursor()
                 
                 if edit_id:
                     # Update existing record
-                    cursor.execute(
+                    action.execute(
                         "UPDATE students SET name = %s, registration_number = %s, course = %s WHERE student_id = %s",
                         (name, registration_number, course, edit_id)
                     )
@@ -100,7 +100,7 @@ def index():
                     flash("Student record updated successfully.", "success")
                 else:
                     # Insert new record
-                    cursor.execute(
+                    action.execute(
                         "INSERT INTO students (name, registration_number, course) VALUES (%s, %s, %s)",
                         (name, registration_number, course)
                     )
@@ -112,7 +112,7 @@ def index():
                     course = ""
                     edit_id = None
                 
-                cursor.close()
+                action.close()
                 conn.close()
                 return redirect(url_for('index'))
             except Exception as e:
@@ -125,10 +125,10 @@ def index():
     students = []
     try:
         conn = get_db_connection()
-        cursor = conn.cursor()
-        cursor.execute("SELECT student_id, name, registration_number, course FROM students ORDER BY student_id DESC")
-        students = cursor.fetchall()
-        cursor.close()
+        action = conn.cursor()
+        action.execute("SELECT student_id, name, registration_number, course FROM students ORDER BY student_id DESC")
+        students = action.fetchall()
+        action.close()
         conn.close()
         
         # Convert tuples to dictionaries for easier template rendering
